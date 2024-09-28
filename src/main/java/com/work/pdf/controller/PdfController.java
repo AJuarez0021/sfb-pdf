@@ -131,7 +131,7 @@ public class PdfController {
         pdfService.merge(files, response.getOutputStream());
     }
 
-    @PostMapping(path = "/converter/word", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = {"application/vnd.openxmlformats-officedocument.wordprocessingml.document"})
+    /*@PostMapping(path = "/converter/word", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = {"application/vnd.openxmlformats-officedocument.wordprocessingml.document"})
     @ResponseBody
     public void converterPdfToWord(
             @RequestParam(name = "file") MultipartFile file,
@@ -140,7 +140,7 @@ public class PdfController {
         response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + out + "\"");
         pdfService.pdfToWord(file, response.getOutputStream());
-    }
+    }*/
 
     @PostMapping(path = "/split/document", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
     @ResponseBody

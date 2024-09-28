@@ -26,7 +26,7 @@ public interface PdfService {
 
     void imageToPdf(MultipartFile inputPdfPath, OutputStream outputPdfPath);
 
-    void pdfToWord(MultipartFile inputFilePath, OutputStream outputFilePath);
+    //void pdfToWord(MultipartFile inputFilePath, OutputStream outputFilePath);
 
     List<FilesDTO> split(MultipartFile inputPdfPath, long maxSizePerDocument);
 

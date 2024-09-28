@@ -1,10 +1,9 @@
 package com.work.pdf.service;
 
-import com.spire.pdf.FileFormat;
-import com.spire.pdf.PdfDocument;
+//import com.spire.pdf.FileFormat;
+//import com.spire.pdf.PdfDocument;
 import com.work.pdf.dto.FilesDTO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,11 +11,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -236,7 +232,7 @@ public class PdfServiceImpl implements PdfService {
         }
     }
 
-    @Override
+    /*@Override
     public void pdfToWord(MultipartFile inputFilePath, OutputStream outputFilePath) {
         try {
             PdfDocument doc = new PdfDocument();
@@ -248,13 +244,12 @@ public class PdfServiceImpl implements PdfService {
             doc.getConvertOptions().setKeepParagraph(true);
 
             //Convert PDF to Docx and save it to a specified path
-            doc.saveToStream(outputFilePath, FileFormat.DOCX);
-            //doc.saveToStream(stream, FileFormat.DOCX);
+            doc.saveToStream(outputFilePath, FileFormat.DOCX);           
             doc.close();
         } catch (IOException ex) {
             log.error("Error: ", ex);
         }
-    }
+    }*/
 
     @Override
     public List<FilesDTO> split(MultipartFile inputPdfPath, long maxSizePerDocument) {
