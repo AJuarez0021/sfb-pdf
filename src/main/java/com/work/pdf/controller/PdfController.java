@@ -191,6 +191,20 @@ public class PdfController {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + out + "\"");
         zipService.zip(pdfs, response.getOutputStream());
     }
+    
+    
+    @PostMapping(path = "/watermark", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = {MediaType.APPLICATION_PDF_VALUE})
+    @ResponseBody
+    public void watermark(@RequestParam(name = "file") MultipartFile file,
+            @RequestParam(name = "angle") Angles angle,
+            @RequestParam(name = "watermark", defaultValue = "") String watermarkText,
+            HttpServletResponse response) throws IOException {
+        log.info("Type: {}", file.getContentType());
+        String out = FileTools.getExtension(file.getOriginalFilename(), "_watermark.pdf");
+        response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + out + "\"");
+        pdfService.watermark(file, response.getOutputStream(), watermarkText, angle.getDegree());
+    }
 
     private class MultipartFilesRequest extends ArrayList<MultipartFile> {
     }

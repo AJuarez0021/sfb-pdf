@@ -5,6 +5,7 @@ package com.work.pdf.tools;
  * @author linux
  */
 public enum Angles {
+    DEGREE_45(45),
     DEGREE_90(90),
     DEGREE_180(180),
     DEGREE_270(270),

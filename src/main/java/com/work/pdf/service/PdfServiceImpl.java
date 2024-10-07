@@ -3,6 +3,7 @@ package com.work.pdf.service;
 //import com.spire.pdf.FileFormat;
 //import com.spire.pdf.PdfDocument;
 import com.work.pdf.dto.FilesDTO;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,11 +22,14 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
+import org.apache.pdfbox.util.Matrix;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -250,7 +254,6 @@ public class PdfServiceImpl implements PdfService {
             log.error("Error: ", ex);
         }
     }*/
-
     @Override
     public List<FilesDTO> split(MultipartFile inputPdfPath, long maxSizePerDocument) {
         // Cargar el archivo PDF original
@@ -392,14 +395,44 @@ public class PdfServiceImpl implements PdfService {
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                 BufferedImage bim = pdfRenderer.renderImageWithDPI(
                         page, dpi, ImageType.RGB);
-                String fileName = String.format("%s_image-%d.%s", inputFile.getOriginalFilename(), page + 1, extension);                
-                ImageIOUtil.writeImage(bim, extension, output, dpi);               
+                String fileName = String.format("%s_image-%d.%s", inputFile.getOriginalFilename(), page + 1, extension);
+                ImageIOUtil.writeImage(bim, extension, output, dpi);
                 String file = Base64.getEncoder().encodeToString(output.toByteArray());
                 pdfs.add(new FilesDTO(fileName, file));
             }
         }
         return pdfs;
     }
-   
+
+    @Override
+    public void watermark(MultipartFile inputFile, OutputStream output, String watermarkText, int rotationAngle) throws IOException {
+        try (PDDocument document = PDDocument.load(inputFile.getInputStream())) {
+
+            for (PDPage page : document.getPages()) {
+                // Configurar transparencia de la marca de agua
+                try (PDPageContentStream contentStream = new PDPageContentStream(document, page, 
+                        PDPageContentStream.AppendMode.APPEND, true, true)) {
+                    // Configurar transparencia de la marca de agua
+                    PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+                    graphicsState.setNonStrokingAlphaConstant(0.3f);  // Nivel de transparencia
+                    contentStream.setGraphicsStateParameters(graphicsState);
+
+                    // Ajustar la fuente y tamaño del texto
+                    contentStream.beginText();
+                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 50);
+                    // Color gris claro
+                    contentStream.setNonStrokingColor(Color.LIGHT_GRAY);
+                    // Rotar y posicionar  
+                    Matrix matrix = Matrix.getRotateInstance(Math.toRadians(rotationAngle), 300, 400);
+                    contentStream.setTextMatrix(matrix);
+                    contentStream.showText(watermarkText);
+                    contentStream.endText();
+                }
+            }
+
+            document.save(output);
+            log.info("Marca de agua añadida correctamente.");
+        }
+    }
 
 }

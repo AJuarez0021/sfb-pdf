@@ -36,5 +36,7 @@ public interface PdfService {
     
     List<FilesDTO> pdfToImage(MultipartFile inputFile, int dpi) throws IOException;
     
+    void watermark(MultipartFile inputFile, OutputStream output, String watermarkText, int rotationAngle) throws IOException;
+    
     
 }

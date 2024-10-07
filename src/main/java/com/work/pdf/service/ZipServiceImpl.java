@@ -26,6 +26,7 @@ public class ZipServiceImpl implements ZipService {
                 zipOut.putNextEntry(zipEntry);
                 byte[] pdf = Base64.getDecoder().decode(file.getFile());
                 IOUtils.copy(new ByteArrayInputStream(pdf), zipOut);
+                zipOut.closeEntry();                
             }
         }
     }
